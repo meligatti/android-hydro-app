@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">HydroApp</string>
+
+    <string name="turn_on_str">Turn On</string>
+    <string name="turn_off_str">Turn Off</string>
+    <string name="discover_str">Discover Bluetooth Devices</string>
+    <string name="paired_str">Detect Paired Devices</string>
+    <string name="BTbutton_content_description">Connect Bluetooth to Device</string>
+    <string name="Wifibutton_content_description">Configure WiFi Connection</string>
+
+    <string name="bt_textview_str">Select the device you want to connect</string>
+
+    <string name="title_wifi_str">Hydro Configuration</string>
+    <string name="instr_wifi_str">Insert the name of your WiFi network</string>
+    <string name="hint_wifi_str">Message</string>
+    <string name="sendbt_wifi_str">SEND</string>
+
+</resources>

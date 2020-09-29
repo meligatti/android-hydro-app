@@ -12,6 +12,7 @@
 
     <string name="title_wifi_str">Hydro Configuration</string>
     <string name="instr_wifi_str">Insert the name of your WiFi network</string>
+    <string name="instr_pass_str">Insert the password of your network</string>
     <string name="hint_wifi_str">Message</string>
     <string name="sendbt_wifi_str">SEND</string>
 

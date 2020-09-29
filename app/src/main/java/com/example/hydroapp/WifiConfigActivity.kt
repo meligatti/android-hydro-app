@@ -129,7 +129,7 @@ class WifiConfigActivity : AppCompatActivity() {
 
 
     private fun changeScreenText() {
-        instructionWifiTextview.text = "Insert the password of your network"
+        instructionWifiTextview.text = "@string/instr_pass_str"//"Insert the password of your network"
     }
 
 }

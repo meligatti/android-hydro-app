@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HydroApp</string>
+    <string name="turn_on_str">Encender Bluetooth</string>
+    <string name="turn_off_str">Apagar Bluetooth</string>
+    <string name="discover_str">Escaneo de dispositivos Bluetooth</string>
+    <string name="paired_str">Detectar dispositivos Bluetooth vinculados</string>
+    <string name="BTbutton_content_description">Conectar a dispositivo seleccionado</string>
+    <string name="Wifibutton_content_description">Configurar conexión WiFi del equipo</string>
+    <string name="bt_textview_str">Seleccione el dispositivo al que desea conectarse</string>
+    <string name="title_wifi_str">Configuración de Hydro</string>
+    <string name="instr_wifi_str">Ingrese el nombre de su red WiFi</string>
+    <string name="instr_pass_str">Ingrese la contraseña de su red WiFi</string>
+    <string name="hint_wifi_str">Mensaje</string>
+    <string name="sendbt_wifi_str">ENVIAR</string>
+</resources>

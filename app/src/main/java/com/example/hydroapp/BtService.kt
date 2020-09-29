@@ -66,6 +66,10 @@ class BtService {
         return selectedDevice
     }
 
+    fun setBtDevice(devAddr: String) {
+        selectedDevice = adapter.getRemoteDevice(devAddr)
+    }
+
     fun getBtSocket() : BluetoothSocket{
         return btSocket
     }
@@ -90,9 +94,9 @@ class BtService {
 
         connSuccess = socketDone and connectionCreated
         if (connSuccess) {
-            println("Successful connection")
+            /*println("Successful connection")
             Toast.makeText(act, "Successful connection", Toast.LENGTH_LONG)
-                .show()
+                .show()*/
         } else if (!socketDone) {
             println("Error creating the socket")
         } else if (!connectionCreated) {
@@ -116,18 +120,18 @@ class BtService {
         return socketDone
     }
 
-    fun closeSocket() {
+    private fun closeSocket() {
         try {
             btSocket.close()
-            println("Attempting to close socket")
+            println("Attempting to close connection")
         } catch(socketCloseErr: IOException) {
-            
+            Toast.makeText(act, "Unable to close connection", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun createConnection(): Boolean {
-        // N de la R: aparentemente despues de una conexion tengo que probar con cerrarla porque
-        // eso habilita a que se pueda conectar mas de un equipo a la vez
+        /* NOTA: Después de establecer una conexión tengo que cerrarla porque
+         eso habilita a que se pueda conectar mas de un equipo a la vez */
         var connectionDone: Boolean = true
         var connectionClosed: Boolean = true
         try {
@@ -135,16 +139,21 @@ class BtService {
             println("Attempting to create connection")
         } catch (connError: IOException) {
             connectionDone = false
-            try {
+            closeSocket()
+            /*try {
                 btSocket.close()
                 println("Trying to close connection")
             } catch (closeError: IOException) {
                 connectionClosed = false
                 println("Unable to close connection")
                 Toast.makeText(act, "Something went wrong", Toast.LENGTH_LONG).show()
-            }
+            }*/
         }
         return (connectionClosed and connectionDone)
+    }
+
+    fun closeConnection() {
+        closeSocket()
     }
 
     fun setupInputStream(mSocket: BluetoothSocket?) {
@@ -164,17 +173,7 @@ class BtService {
         } catch (ioe: IOException) {
             Toast.makeText(act, "Error sending data", Toast.LENGTH_LONG).show()
             // Poner intent para volver a la actividad anterior
-
-            // Ver si es necesario hacer esto para tener 2 intentos para cerrar el socket
-            try {
-                btSocket.close()
-            } catch (ioe2: IOException) {
-                /*try {
-                    btSocket.close()
-                } catch (ioe3: IOException) {
-
-                }*/
-            }
+            closeSocket()
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.hydroapp
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -21,7 +20,6 @@ class BtActivity : AppCompatActivity() {
     private lateinit var pairedDevicesList: MutableSet<BluetoothDevice>
     private lateinit var listView: ListView
 
-    //@SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bt)
@@ -85,7 +83,6 @@ class BtActivity : AppCompatActivity() {
             devicesArray[i] = pairedDevicesList.elementAt(i).name + "\n" + pairedDevicesList.elementAt(i).address
         }
         devicesArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, devicesArray)
-        // Nota: estoy probando sin crear una variable listview, funca
         pairedDevicesLv.adapter = devicesArrayAdapter
     }
 

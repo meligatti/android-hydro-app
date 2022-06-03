@@ -59,7 +59,7 @@ class BtService {
         }
     }
 
-    /* Funciones usadas en la actividad de Wifi Config*/
+    /* Funciones usadas en la actividad de Wifi Config */
 
     fun getBtDevice(devAddr: String) : BluetoothDevice{
         selectedDevice = adapter.getRemoteDevice(devAddr)

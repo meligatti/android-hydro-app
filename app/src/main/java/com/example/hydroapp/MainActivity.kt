@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         // devices
         BTButton.setOnClickListener {
             if (BtoothAdapter.getBtAdapter() == null) {
-                Toast.makeText(this, "No Bluetooth Adapter Available", Toast.LENGTH_LONG)
+                Toast.makeText(this, "No Bluetooth Adapter Available", Toast.LENGTH_LONG).show()
             } else {
                 val BTintent = Intent(this, BtActivity::class.java)
                 startActivityForResult(BTintent, REQUEST_CODE_PAIRED_DEVICE)
@@ -53,15 +53,20 @@ class MainActivity : AppCompatActivity() {
             if(deviceMACaddr.isEmpty()){
                 Toast.makeText(this, "No selected device", Toast.LENGTH_LONG).show()
             } else {
-                if (checkIfIsOnline()) {
-                    BtoothAdapter.closeConnection()
-                    val devAddr: String = deviceMACaddr
-                    val WifiConfigIntent = Intent(this, WifiConfigActivity::class.java)
-                    WifiConfigIntent.putExtra("addr", devAddr)
-                    startActivityForResult(WifiConfigIntent, REQUEST_CODE_WIFI_CONFIG)
-                } /*else {
+                if (isESPDevice(posTextView.text.toString())) {
+                    if (checkIfIsOnline()) {
+                        BtoothAdapter.closeConnection()
+                        val devAddr: String = deviceMACaddr
+                        val WifiConfigIntent = Intent(this, WifiConfigActivity::class.java)
+                        WifiConfigIntent.putExtra("addr", devAddr)
+                        startActivityForResult(WifiConfigIntent, REQUEST_CODE_WIFI_CONFIG)
+                    } /*else {
                     Toast.makeText(this, "The device is not online", Toast.LENGTH_LONG).show()
                 }*/
+                }
+                else {
+                    Toast.makeText(this, "The bluetooth device is not an ESP32 device", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
@@ -79,10 +84,15 @@ class MainActivity : AppCompatActivity() {
             posTextView.text = deviceName
             BtoothAdapter.setBtDevice(deviceMACaddr)
         } else if ((requestCode == REQUEST_CODE_WIFI_CONFIG) and (resultCode == Activity.RESULT_CANCELED)) {
-            Toast.makeText(this@MainActivity, "The connection was aborted", Toast.LENGTH_LONG)
+            Toast.makeText(this@MainActivity, "The connection was aborted", Toast.LENGTH_LONG).show()
             println("Connection couldn't be completed")
         }
     }
+
+    fun isESPDevice(deviceName: String): Boolean {
+        return deviceName.contains("ESP32")
+    }
+
 
     fun checkIfIsOnline(): Boolean {
         var validDevice = BtoothAdapter.establishBtConnection()

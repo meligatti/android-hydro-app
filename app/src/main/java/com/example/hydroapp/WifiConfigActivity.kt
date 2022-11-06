@@ -7,13 +7,13 @@ import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_wifi_config.*
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-
-// TENGO QUE AGREGAR CODIGO PARA ONRESUME (POR SI SALGO Y VUELVO)
 
 class WifiConfigActivity : AppCompatActivity() {
 
@@ -54,10 +54,13 @@ class WifiConfigActivity : AppCompatActivity() {
             changeScreenText()
             var msg: String = messageEditText.text.toString()
             mBtoothObject.sendMessage(msg)
+//            var rxMsg: String = mBtoothObject.receiveMessage()
+            checkMsgRx(msg)
             checkTransmissionState()
         }
     }
 
+    // TENGO QUE AGREGAR CODIGO PARA ONRESUME (POR SI SALGO Y VUELVO)
     /*override fun onResume() {
         super.onResume()
         initRoutine()
@@ -78,6 +81,28 @@ class WifiConfigActivity : AppCompatActivity() {
         when (sendCounter) {
             NAME_PRESSED -> clearBoxText()
             PASS_PRESSED -> returnToMainActivity()
+        }
+    }
+
+    private fun checkMsgRx(msgSent: String) {
+        var act = this@WifiConfigActivity
+        var espConfirm = mBtoothObject.receiveMessage()
+        // Remove the last two chars to perform string comparison as they are terminators
+        espConfirm = espConfirm.substring(startIndex = 0, endIndex = espConfirm.length - 2)
+        when (sendCounter) {
+            NAME_PRESSED ->
+                if (espConfirm == msgSent) {
+                    Toast.makeText(act, "Network name received successfully by ESP32", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(act, "Unknown name state", Toast.LENGTH_SHORT).show()
+                }
+            PASS_PRESSED ->
+                if (espConfirm == msgSent) {
+                    Toast.makeText(act, "Network password received successfully by ESP32", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(act, "Unknown password state", Toast.LENGTH_SHORT).show()
+                }
+
         }
     }
 
@@ -104,9 +129,8 @@ class WifiConfigActivity : AppCompatActivity() {
         if(connSuccess) {
             devicesConnected = true
             btSocket = mBtoothObject.getBtSocket()
+            mBtoothObject.setupOutputStream(btSocket)
             mBtoothObject.setupInputStream(btSocket)
-            // La conversión del siguiente renglón NO FUNCA:
-            // mBtoothObject.sendMessage(initMsg.toString())
             mBtoothObject.sendMessage(String(initMsg))
         } else {
             failedReturn()
@@ -129,7 +153,8 @@ class WifiConfigActivity : AppCompatActivity() {
 
 
     private fun changeScreenText() {
-        instructionWifiTextview.text = "@string/instr_pass_str"//"Insert the password of your network"
+        //instructionWifiTextview.text = "@string/instr_pass_str"
+        instructionWifiTextview.text = "Insert the password of your network"
     }
 
 }

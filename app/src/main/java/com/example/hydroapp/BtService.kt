@@ -7,13 +7,17 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
+import android.nfc.Tag
+import android.renderscript.ScriptGroup
 import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_bt.*
 import kotlinx.android.synthetic.main.activity_wifi_config.*
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
 
@@ -32,6 +36,10 @@ class BtService {
     private lateinit var btSocket: BluetoothSocket
 
     private var dataOut: OutputStream? = null
+    private var dataIn: InputStream? = null
+    // Buffer that stores the incoming data
+    private var dataBuffer: ByteArray = ByteArray(1024)
+    private var messageRx: String = ""
 
     constructor(ctxt: Context, activ: Activity) {
         this.context = ctxt
@@ -156,7 +164,7 @@ class BtService {
         closeSocket()
     }
 
-    fun setupInputStream(mSocket: BluetoothSocket?) {
+    fun setupOutputStream(mSocket: BluetoothSocket?) {
         var dataToSend: OutputStream? = null
         try {
             dataToSend = mSocket!!.outputStream
@@ -177,4 +185,34 @@ class BtService {
         }
     }
 
+    fun setupInputStream(mSocket: BluetoothSocket?) {
+        var dataToReceive: InputStream? = null
+        try {
+            dataToReceive = mSocket!!.inputStream
+        } catch (ioe: IOException) {
+
+        }
+        dataIn = dataToReceive
+    }
+
+    fun receiveMessage(): String{
+        // Number of bytes returned from reading
+        val bufferSize: Int = 256
+        val bufferMem = ByteArray(bufferSize)
+        messageRx = ""
+        try {
+            val incomingBytes: Int = dataIn!!.read(bufferMem)
+            // TODO: Check arguments
+            messageRx += String(bufferMem,0, incomingBytes)
+            // TODO: Uncomment if necessary
+            //Toast.makeText(act, messageRx, Toast.LENGTH_SHORT).show()
+            // TODO: Need to clear string to 
+//            messageRx = ""
+
+        } catch (ioe: IOException) {
+            Toast.makeText(act, "Error receiving data", Toast.LENGTH_LONG).show()
+            closeSocket()
+        }
+        return messageRx
+    }
 }

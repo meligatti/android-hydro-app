@@ -41,14 +41,19 @@ class WifiConfigActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wifi_config)
+    }
 
+    override fun onStart() {
+        super.onStart()
         val devAddr: String? = intent.getStringExtra("addr")
         if (devAddr != null) {
             btDevice = mBtoothObject.getBtDevice(devAddr)
         }
-
         initRoutine()
+    }
 
+    override fun onResume() {
+        super.onResume()
         sendButton.setOnClickListener {
             sendCounter = sendCounter + 1
             changeScreenText()
@@ -60,21 +65,14 @@ class WifiConfigActivity : AppCompatActivity() {
         }
     }
 
-    // TENGO QUE AGREGAR CODIGO PARA ONRESUME (POR SI SALGO Y VUELVO)
-    /*override fun onResume() {
-        super.onResume()
-        initRoutine()
-    }*/
-
-    override fun onPause() {
-        super.onPause()
-        recreate()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        recreate()
-        //initRoutine()
+    // This function is called when there is a mismatch between data sent and data received by the ESP32.
+    override fun onStop() {
+        super.onStop()
+        when (sendCounter) {
+            NAME_PRESSED -> Toast.makeText(this@WifiConfigActivity, "Unknown name state", Toast.LENGTH_SHORT).show()
+            PASS_PRESSED -> Toast.makeText(this@WifiConfigActivity, "Unknown password state", Toast.LENGTH_SHORT).show()
+        }
+        this.returnToMainActivity()
     }
 
     private fun checkTransmissionState() {
@@ -94,13 +92,13 @@ class WifiConfigActivity : AppCompatActivity() {
                 if (espConfirm == msgSent) {
                     Toast.makeText(act, "Network name received successfully by ESP32", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(act, "Unknown name state", Toast.LENGTH_SHORT).show()
+                    this.onStop()
                 }
             PASS_PRESSED ->
                 if (espConfirm == msgSent) {
                     Toast.makeText(act, "Network password received successfully by ESP32", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(act, "Unknown password state", Toast.LENGTH_SHORT).show()
+                    this.onStop()
                 }
 
         }
@@ -144,9 +142,6 @@ class WifiConfigActivity : AppCompatActivity() {
     
     private fun failedReturn() {
         // Código extra para retornar a la main activity
-       /* val connFail = Intent()
-        setResult(Activity.RESULT_CANCELED, connFail)
-        finish()*/
         setResult(Activity.RESULT_CANCELED)
         finish()
     }
